@@ -27,12 +27,22 @@ export default function App() {
     setScreen('results')
   }
 
+  // Playback is session-only per the plan -- nothing is persisted, so the
+  // in-memory Blob URL is freed the moment we're done showing these results,
+  // rather than relying on component-unmount cleanup (which StrictMode's
+  // dev-mode double-invoke would trigger before the user ever presses play).
+  function releaseAudioUrl() {
+    if (results?.audioUrl) URL.revokeObjectURL(results.audioUrl)
+  }
+
   function handleRetry() {
+    releaseAudioUrl()
     setResults(null)
     setScreen('practice')
   }
 
   function handleNewScenario() {
+    releaseAudioUrl()
     setSelectedScenario(null)
     setSelectedMode(null)
     setResults(null)

@@ -17,6 +17,10 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
   const startTimeRef = useRef(0)
   const chunksRef = useRef([]) // { text, time } -- time is ms since recording started
 
+  const streamRef = useRef(null)
+  const mediaRecorderRef = useRef(null)
+  const audioChunksRef = useRef([])
+
   useEffect(() => {
     const SpeechRecognition = getSpeechRecognition()
     const recognition = new SpeechRecognition()
@@ -64,6 +68,7 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
       shouldBeListeningRef.current = false
       recognition.onend = null
       recognition.abort()
+      streamRef.current?.getTracks().forEach((track) => track.stop())
     }
   }, [])
 
@@ -83,19 +88,64 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
     setPhase('countdown')
   }
 
-  function beginRecording() {
+  async function beginRecording() {
     chunksRef.current = []
+    audioChunksRef.current = []
     setInterimText('')
+
+    // MediaRecorder captures the raw audio for playback -- a separate API
+    // from SpeechRecognition, which manages its own mic access internally.
+    // Requesting our own stream here is what lets us record audio at all;
+    // if the user has already granted mic permission this resolves near-
+    // instantly, and if they haven't, this is what shows the prompt.
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      streamRef.current = stream
+      if (typeof MediaRecorder !== 'undefined') {
+        const mediaRecorder = new MediaRecorder(stream)
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) audioChunksRef.current.push(event.data)
+        }
+        mediaRecorderRef.current = mediaRecorder
+        mediaRecorder.start()
+      }
+    } catch {
+      shouldBeListeningRef.current = false
+      setPhase('permission-denied')
+      return
+    }
+
     startTimeRef.current = Date.now()
     shouldBeListeningRef.current = true
     setPhase('recording')
     recognitionRef.current.start()
   }
 
-  function handleStop() {
+  // Resolves once the recorder has actually finished writing its last
+  // chunk (rather than guessing with a fixed delay), so the resulting
+  // Blob is never missing the tail end of the recording.
+  function stopMediaRecorder() {
+    return new Promise((resolve) => {
+      const mediaRecorder = mediaRecorderRef.current
+      if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+        resolve(null)
+        return
+      }
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' })
+        resolve(URL.createObjectURL(blob))
+      }
+      mediaRecorder.stop()
+    })
+  }
+
+  async function handleStop() {
     shouldBeListeningRef.current = false
     recognitionRef.current.stop()
     setPhase('processing')
+
+    const audioUrl = await stopMediaRecorder()
+    streamRef.current?.getTracks().forEach((track) => track.stop())
 
     // Give the last onresult event a beat to land before running the
     // analysis pipeline.
@@ -116,7 +166,7 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
           : computeFreestyleMetrics({ transcript, chunks: chunksRef.current, durationMs })
 
       const feedback = generateFeedback(metrics)
-      onComplete({ transcript, metrics, feedback })
+      onComplete({ transcript, metrics, feedback, audioUrl })
     }, 400)
   }
 

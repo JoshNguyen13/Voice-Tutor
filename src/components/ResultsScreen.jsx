@@ -17,7 +17,7 @@ function RawMetric({ label, value }) {
 }
 
 export default function ResultsScreen({ results, scenario, onRetry, onNewScenario }) {
-  const { metrics, feedback } = results
+  const { metrics, feedback, audioUrl } = results
   const isScripted = metrics.mode === 'scripted'
   const scoreTier = metrics.overallScore >= 80 ? 'high' : metrics.overallScore >= 50 ? 'mid' : 'low'
 
@@ -45,6 +45,13 @@ export default function ResultsScreen({ results, scenario, onRetry, onNewScenari
         <RawMetric label="Pauses" value={metrics.pauseCount} />
         <RawMetric label="Duration" value={`${metrics.durationSeconds}s`} />
       </div>
+
+      {audioUrl && (
+        <div className="audio-playback">
+          <p>Listen back</p>
+          <audio controls src={audioUrl} />
+        </div>
+      )}
 
       <div className="feedback-list">
         {feedback.map((item, idx) => (

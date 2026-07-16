@@ -385,6 +385,27 @@ button {
   margin-top: 2px;
 }
 
+.audio-playback {
+  margin: 20px 0;
+  padding: 14px 16px;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.audio-playback p {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.audio-playback audio {
+  width: 100%;
+}
+
 .feedback-list {
   margin: 20px 0;
 }
