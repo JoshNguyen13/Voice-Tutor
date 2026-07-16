@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getSpeechRecognition } from '../utils/speechSupport.js'
+import { getLastAttempt, saveLastAttempt } from '../utils/history.js'
 import { alignTranscript } from '../analysis/align.js'
 import { computeScriptedMetrics, computeFreestyleMetrics } from '../analysis/metrics.js'
 import { generateFeedback } from '../analysis/feedback.js'
@@ -163,10 +164,24 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
               chunks: chunksRef.current,
               durationMs,
             })
-          : computeFreestyleMetrics({ transcript, chunks: chunksRef.current, durationMs })
+          : computeFreestyleMetrics({
+              transcript,
+              chunks: chunksRef.current,
+              durationMs,
+              targetSeconds: scenario.freestyleSeconds,
+            })
 
       const feedback = generateFeedback(metrics)
-      onComplete({ transcript, metrics, feedback, audioUrl })
+
+      // Retry-and-compare (Phase 2): grab whatever was saved from the last
+      // attempt at this exact scenario+mode *before* overwriting it with
+      // this attempt's scores, so the results screen can show "this time
+      // vs. last time" without a real backend -- just one small
+      // localStorage entry per scenario+mode.
+      const previousAttempt = getLastAttempt(scenario.id, mode)
+      saveLastAttempt(scenario.id, mode, { overallScore: metrics.overallScore, subScores: metrics.subScores })
+
+      onComplete({ transcript, metrics, feedback, audioUrl, previousAttempt })
     }, 400)
   }
 

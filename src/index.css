@@ -385,6 +385,76 @@ button {
   margin-top: 2px;
 }
 
+.compare-section {
+  margin: 20px 0;
+  padding: 14px 16px;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.compare-heading {
+  margin: 0 0 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+}
+
+.compare-stat {
+  text-align: center;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 6px;
+}
+
+.compare-label {
+  font-size: 0.7rem;
+  color: var(--color-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.compare-values {
+  margin-top: 4px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+}
+
+.compare-current {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.compare-delta {
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.compare-up .compare-delta {
+  color: var(--duo-green-dark);
+}
+
+.compare-down .compare-delta {
+  color: var(--duo-red-dark);
+}
+
+.compare-flat .compare-delta {
+  color: var(--color-muted);
+}
+
 .audio-playback {
   margin: 20px 0;
   padding: 14px 16px;

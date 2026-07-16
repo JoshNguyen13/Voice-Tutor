@@ -16,8 +16,32 @@ function RawMetric({ label, value }) {
   )
 }
 
+// Phase 2's "retry and compare" view: one score, shown next to what the
+// same scenario+mode scored on the last attempt (read from localStorage --
+// see src/utils/history.js). The delta is colored green/red/gray purely
+// from the sign of (current - previous); there's no notion of a "good"
+// or "bad" direction baked in beyond "did the number go up or down".
+function CompareStat({ label, current, previous }) {
+  const delta = current - previous
+  const direction = delta > 0 ? 'up' : delta < 0 ? 'down' : 'flat'
+  const sign = delta > 0 ? '+' : ''
+
+  return (
+    <div className={`compare-stat compare-${direction}`}>
+      <div className="compare-label">{label}</div>
+      <div className="compare-values">
+        <span className="compare-current">{current}</span>
+        <span className="compare-delta">
+          {sign}
+          {delta}
+        </span>
+      </div>
+    </div>
+  )
+}
+
 export default function ResultsScreen({ results, scenario, onRetry, onNewScenario }) {
-  const { metrics, feedback, audioUrl } = results
+  const { metrics, feedback, audioUrl, previousAttempt } = results
   const isScripted = metrics.mode === 'scripted'
   const scoreTier = metrics.overallScore >= 80 ? 'high' : metrics.overallScore >= 50 ? 'mid' : 'low'
 
@@ -45,6 +69,25 @@ export default function ResultsScreen({ results, scenario, onRetry, onNewScenari
         <RawMetric label="Pauses" value={metrics.pauseCount} />
         <RawMetric label="Duration" value={`${metrics.durationSeconds}s`} />
       </div>
+
+      {previousAttempt && (
+        <div className="compare-section">
+          <p className="compare-heading">Compared to last attempt</p>
+          <div className="compare-grid">
+            <CompareStat label="Overall" current={metrics.overallScore} previous={previousAttempt.overallScore} />
+            <CompareStat label="Pace" current={metrics.subScores.pace} previous={previousAttempt.subScores.pace} />
+            {isScripted && (
+              <CompareStat label="Accuracy" current={metrics.subScores.accuracy} previous={previousAttempt.subScores.accuracy} />
+            )}
+            <CompareStat label="Fluency" current={metrics.subScores.fluency} previous={previousAttempt.subScores.fluency} />
+            <CompareStat
+              label="Consistency"
+              current={metrics.subScores.consistency}
+              previous={previousAttempt.subScores.consistency}
+            />
+          </div>
+        </div>
+      )}
 
       {audioUrl && (
         <div className="audio-playback">

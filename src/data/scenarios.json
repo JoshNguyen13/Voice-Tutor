@@ -88,5 +88,275 @@
     "premise": "You're the best man giving the opening of your speech at your friend's wedding. Introduce yourself and set the tone.",
     "freestyleSeconds": 60,
     "text": "For anyone who does not know me, I am the friend who once texted the groom at two in the morning before his final exam, asking if he wanted tacos instead of studying, and somehow he still asked me to stand up here today. We have been through a lot together: terrible apartments, worse haircuts, and one road trip I am legally not allowed to describe in front of these relatives. Through all of it, I watched him grow into someone genuinely ready for this kind of commitment, which honestly still surprises me some days. Please join me in raising a glass to the two of them, and to a marriage as steady and ridiculous as our friendship has been."
+  },
+  {
+    "id": "job-interview-tell-me-about-yourself",
+    "title": "Job Interview: Tell Me About Yourself",
+    "category": "professional",
+    "difficulty": "beginner",
+    "premise": "You're in a job interview and the hiring manager just asked you to tell them about yourself. Give a concise, compelling answer.",
+    "freestyleSeconds": 60,
+    "text": "Thanks for asking. I started my career doing customer support, which taught me more about how products actually get used than any other job I've had since. That curiosity pulled me into product management about four years ago, where I've spent most of my time working on onboarding flows for small business tools. What I'm proudest of is a redesign that cut our signup drop-off almost in half, mostly by removing steps nobody actually needed. I'm looking for a role where I can go deeper on a single product rather than spreading across many, and where research and shipping are treated as the same job rather than separate ones. That's what drew me to this opening."
+  },
+  {
+    "id": "sales-pitch-cold-call",
+    "title": "Sales Pitch: Cold Call Opening",
+    "category": "professional",
+    "difficulty": "intermediate",
+    "premise": "You're making a cold call to a potential customer who picked up the phone. You have about a minute before they hang up -- make your pitch count.",
+    "freestyleSeconds": 45,
+    "text": "Hi, thanks for picking up -- I promise this is short. I work with small accounting firms, and most of the ones I talk to are still tracking client deadlines across three or four spreadsheets that nobody fully trusts. We built a tool that pulls all of that into one calendar view, and firms using it tell us they catch missed deadlines before they become client emergencies rather than after. I'm not asking for a decision right now, just fifteen minutes next week to show you the calendar view and let you tell me honestly whether it's useless or useful for how your firm actually works."
+  },
+  {
+    "id": "giving-critical-feedback",
+    "title": "Giving Critical Feedback to a Direct Report",
+    "category": "professional",
+    "difficulty": "advanced",
+    "premise": "You need to give a direct report difficult but constructive feedback about missed deadlines. Deliver it clearly and kindly.",
+    "freestyleSeconds": 60,
+    "text": "I want to talk about the last two project deadlines, because I think there's a pattern worth naming before it becomes a bigger problem. Both times, the work itself was strong once it landed, but it landed late, and that put pressure on everyone downstream of you. I don't think this is about ability -- your work is good. I suspect it's about flagging risk early rather than trying to solve it quietly and hoping it resolves in time. Going forward, I'd rather hear about a slipping deadline three days before it happens than find out the day of. Can we agree on a simple check-in for that?"
+  },
+  {
+    "id": "asking-for-a-raise",
+    "title": "Asking for a Raise",
+    "category": "professional",
+    "difficulty": "intermediate",
+    "premise": "You're sitting down with your manager to make the case for a raise. Explain why you've earned it.",
+    "freestyleSeconds": 60,
+    "text": "Thanks for making time for this. Over the past year, I took on the client migration project with almost no ramp-up time, and it closed under budget and ahead of the original schedule, which two other people on the team had already tried and stepped back from. I also started mentoring two of the newer hires informally, and both of them have told me directly that it's made a real difference in how quickly they've ramped up. Based on that, and on what similar roles are paying elsewhere right now, I'd like to talk about bringing my compensation in line with the scope of what I'm actually doing. I'd love to hear your thoughts."
+  },
+  {
+    "id": "podcast-guest-intro",
+    "title": "Podcast Guest Introduction",
+    "category": "professional",
+    "difficulty": "beginner",
+    "premise": "You're a guest being introduced on a podcast and the host just handed the mic to you to say a quick word about yourself before diving in.",
+    "freestyleSeconds": 45,
+    "text": "Thanks so much for having me on -- I've genuinely been a listener for a while, so this feels a little surreal. For anyone who hasn't come across my work before, I spent about a decade building data pipelines for retail companies before starting my own small consultancy focused on helping mid-sized teams untangle reporting that's grown messier than anyone intended. Most of what I talk about publicly comes directly from watching the same three or four mistakes happen on repeat across very different companies. I'm excited to get into some of that with you today."
+  },
+  {
+    "id": "project-kickoff-meeting",
+    "title": "Opening a Project Kickoff Meeting",
+    "category": "professional",
+    "difficulty": "beginner",
+    "premise": "You're opening a kickoff meeting for a new project with a team that's just been assembled. Set the tone and explain what's ahead.",
+    "freestyleSeconds": 60,
+    "text": "Thanks everyone for making time today -- I know most of you are juggling this alongside other work, so I'll keep this focused. Over the next six weeks, we're building the new reporting dashboard that customer success has been asking for since basically last summer. I've put together a rough timeline, but I want to be upfront that it's a starting point, not a commitment carved in stone -- if something doesn't make sense once we're in it, we adjust. What I do want to lock in today is who owns what, so nobody's guessing two weeks from now. Let's go through the breakdown I sent over and flag anything that looks off."
+  },
+  {
+    "id": "incident-postmortem-update",
+    "title": "Incident Postmortem Briefing",
+    "category": "professional",
+    "difficulty": "advanced",
+    "premise": "You're briefing leadership on what caused a recent system outage and what's being done to prevent it from happening again.",
+    "freestyleSeconds": 75,
+    "text": "I want to walk through what happened Tuesday, why it happened, and what we're changing so it doesn't happen again. The short version is that a routine database migration ran during peak traffic instead of the scheduled maintenance window, because our deployment calendar didn't actually block that time slot the way we assumed it did. The outage lasted about forty minutes and affected roughly a third of active users. Nobody's data was lost, but the impact on trust is real, and I'm not going to minimize that. Starting this week, deployment windows are enforced automatically rather than relying on someone remembering to check a calendar, and we're adding a second reviewer requirement for any migration touching production."
+  },
+  {
+    "id": "product-launch-announcement",
+    "title": "Product Launch Announcement",
+    "category": "professional",
+    "difficulty": "intermediate",
+    "premise": "You're announcing a new product launch to the wider company. Build excitement and explain why it matters.",
+    "freestyleSeconds": 60,
+    "text": "I'm genuinely excited to share that as of this morning, the mobile version of the platform is live for every customer, not just the beta group we've had testing it for the last two months. This has been close to a year of work across three different teams, and it's the single most requested feature we've had in our support inbox since I started here. Early numbers from the beta are strong -- daily engagement is up considerably among the group that's had early access. None of this happens without the people in this room, so thank you. Support and marketing have the full rollout details, and I'd encourage everyone to actually try it yourselves today."
+  },
+  {
+    "id": "introducing-a-keynote-speaker",
+    "title": "Introducing a Keynote Speaker",
+    "category": "professional",
+    "difficulty": "intermediate",
+    "premise": "You're introducing the keynote speaker at a company or industry event. Build them up before handing over the stage.",
+    "freestyleSeconds": 45,
+    "text": "It's my pleasure to introduce our speaker for this morning's keynote. She spent the better part of fifteen years building infrastructure at companies most of you rely on daily without ever thinking about it, before starting her own research lab focused on making that infrastructure fail more gracefully when it inevitably breaks. I've had the chance to hear her speak before, and what stands out is that she never oversimplifies a hard problem just to make it sound solved. Please join me in welcoming her to the stage."
+  },
+  {
+    "id": "requesting-deadline-extension",
+    "title": "Requesting a Deadline Extension",
+    "category": "professional",
+    "difficulty": "beginner",
+    "premise": "You need to ask a client or manager for more time on a project. Explain the situation and make your request.",
+    "freestyleSeconds": 45,
+    "text": "I wanted to flag something before it becomes a surprise rather than a heads-up. We've hit a dependency issue with the vendor integration that's outside of our control, and it's going to push the original delivery date by roughly a week. I'd rather tell you now, with a plan, than tell you on the deadline itself with an apology. The rest of the project is on track, and this doesn't affect anything else we've committed to. I wanted to check whether the extra week works on your end, or whether there's a partial delivery that would help you in the meantime."
+  },
+  {
+    "id": "graduation-speech-opening",
+    "title": "Graduation Speech Opening",
+    "category": "ceremonial",
+    "difficulty": "intermediate",
+    "premise": "You're opening a graduation speech to your fellow classmates. Set the tone for the rest of the ceremony.",
+    "freestyleSeconds": 60,
+    "text": "Four years ago, most of us walked onto this campus knowing almost no one, carrying boxes up three flights of stairs in the middle of a heat wave that nobody warned us about. Somewhere between then and now, this stopped being a place we were just passing through and became somewhere that actually shaped us. I won't pretend the last four years were easy for everyone in the same way -- they weren't. But I do think every single person in this room is leaving more capable than they arrived, whether or not that shows up on a transcript. To the professors who stayed late, and the friends who kept us upright at 2 a.m. before finals, thank you."
+  },
+  {
+    "id": "anniversary-toast",
+    "title": "Wedding Anniversary Toast",
+    "category": "ceremonial",
+    "difficulty": "beginner",
+    "premise": "You're giving a toast at a couple's wedding anniversary celebration. Say a few words in their honor.",
+    "freestyleSeconds": 60,
+    "text": "Twenty-five years ago today, these two stood up in front of family and made a promise that, frankly, most people underestimate how hard it is to keep. What I've always admired about their marriage is how ordinary it looks from the outside and how solid it is underneath -- no grand gestures, just showing up for each other on the unremarkable Tuesdays as much as the big occasions. I've watched them raise a family, weather job changes, and still somehow make each other laugh at the same old jokes after all this time. Please join me in raising a glass to twenty-five years, and to many more."
+  },
+  {
+    "id": "christening-baby-naming-speech",
+    "title": "Baby Naming / Christening Speech",
+    "category": "ceremonial",
+    "difficulty": "beginner",
+    "premise": "You're speaking at a baby naming or christening ceremony for a close friend's or family member's new child. Welcome the baby into the family.",
+    "freestyleSeconds": 45,
+    "text": "We're gathered today to welcome the newest and by far the loudest member of this family. Choosing a name is one of the first real decisions parents make for a child, and this one was chosen carefully, with a grandmother's name tucked into the middle of it so she's carried forward in some small way. What I hope for this child is not a life free of difficulty, because that's not really available to anyone, but a life surrounded by people who show up the way everyone in this room has shown up today. Welcome to the family -- you have no idea yet how loved you already are."
+  },
+  {
+    "id": "house-warming-toast",
+    "title": "Housewarming Toast",
+    "category": "ceremonial",
+    "difficulty": "beginner",
+    "premise": "You're giving a toast at a friend's housewarming party to celebrate their new home.",
+    "freestyleSeconds": 45,
+    "text": "I still remember the group chat message when they first found this place -- pure chaos, way too many exclamation points, completely deserved. Buying a home is one of those things that sounds simple until you're actually the one doing it, and watching them get through inspections, financing, and one truly cursed contractor to end up standing here tonight has been genuinely fun to witness from the sidelines. This house is going to hold a lot of dinners, a lot of ordinary Tuesdays, and hopefully a lot of nights exactly like this one. Please raise a glass to their new home, and to many more nights like this under this roof."
+  },
+  {
+    "id": "sports-team-victory-speech",
+    "title": "Championship Victory Speech",
+    "category": "ceremonial",
+    "difficulty": "intermediate",
+    "premise": "Your team just won a championship and you've been asked to say a few words to the team and the crowd.",
+    "freestyleSeconds": 60,
+    "text": "I want to start by saying this trophy belongs to every single person who put in work nobody was watching -- the early mornings, the film sessions nobody wanted to sit through, the practices in weather that frankly should have gotten us all sent home. We lost some tough games this season, and honestly, those losses probably built more of tonight than any of the wins did. I've never coached or played with a group that trusted each other this completely, especially when things weren't going our way in the fourth quarter. Whatever happens from here, I want everyone in this room to remember exactly how this feels tonight."
+  },
+  {
+    "id": "farewell-speech-leaving-job",
+    "title": "Farewell Speech When Leaving a Job",
+    "category": "ceremonial",
+    "difficulty": "intermediate",
+    "premise": "You're leaving your job for a new opportunity and want to say a proper goodbye to your team.",
+    "freestyleSeconds": 60,
+    "text": "I've rewritten this in my head about six times this week, so I'll just say it plainly: this has been one of the best professional chapters of my life, and leaving it is genuinely bittersweet rather than easy. I came in barely knowing how to run a status meeting, and I'm leaving having learned most of what I actually know about this work from people sitting in this room right now. The new role is a real opportunity I couldn't turn down, but I want to be clear that I'm not leaving because anything here was wrong -- quite the opposite. I fully expect to be back for lunch more often than is probably normal. Thank you for absolutely everything."
+  },
+  {
+    "id": "opening-a-charity-gala",
+    "title": "Opening a Charity Gala",
+    "category": "ceremonial",
+    "difficulty": "advanced",
+    "premise": "You're opening a fundraising gala for a charity you're deeply involved with. Set the tone and explain why the cause matters.",
+    "freestyleSeconds": 75,
+    "text": "Thank you all for putting on formal wear and showing up on a Thursday night for a cause that, three years ago, I knew almost nothing about myself. What changed that was meeting a family directly affected by exactly the problem this organization exists to address, and realizing how much of what looks like an abstract statistic is actually somebody's ordinary Tuesday. Every dollar raised tonight goes directly to programs we can walk you through in detail, not administrative overhead sitting somewhere in a spreadsheet. I'm not going to pretend one gala solves a problem this size, but I do believe rooms like this one, filled with people willing to show up, are exactly how these problems eventually get smaller. Thank you for being here."
+  },
+  {
+    "id": "welcome-speech-new-club-president",
+    "title": "First Speech as New Club President",
+    "category": "ceremonial",
+    "difficulty": "beginner",
+    "premise": "You've just been elected president of a club or organization and are giving your first speech to the members.",
+    "freestyleSeconds": 45,
+    "text": "I want to start by thanking the outgoing president for genuinely setting the bar high -- I'm inheriting a club that's in far better shape than most incoming presidents get handed. My plan for this year isn't to reinvent everything that's already working, it's mostly to fix the handful of things members have been quietly frustrated about for a while, starting with how confusing event sign-ups have gotten. I want this to be a club people actually look forward to showing up to, not just one they're technically members of. If you have an idea, genuinely come find me -- that's what this role is actually for."
+  },
+  {
+    "id": "dedication-speech-new-building",
+    "title": "Dedicating a New Community Building",
+    "category": "ceremonial",
+    "difficulty": "advanced",
+    "premise": "You're dedicating a newly completed building -- a community center, library, or similar -- to the public. Mark the occasion.",
+    "freestyleSeconds": 75,
+    "text": "Six years ago, this was a parking lot that most people in this town drove past without a second thought. Today, it's a building that took more fundraising dinners, zoning meetings, and stubborn volunteers than I can accurately count to make real. I want to be honest that this project almost didn't happen twice -- once when funding fell through, and once when the original design turned out to cost far more than anyone had budgeted for. It happened anyway because enough people refused to let it not happen. This building doesn't belong to any one of us standing up here; it belongs to whoever walks through those doors starting tomorrow morning. I'm proud to formally dedicate it to this community."
+  },
+  {
+    "id": "proposing-a-toast-at-a-reunion",
+    "title": "Toast at a Class Reunion",
+    "category": "social",
+    "difficulty": "beginner",
+    "premise": "You're at a high school or college reunion and have been asked to say a few words to the group.",
+    "freestyleSeconds": 45,
+    "text": "Looking around this room, it's a strange kind of time travel -- everyone simultaneously exactly the same and completely different from how I remember them. I'll admit I was nervous about coming tonight, half-expecting it to feel like walking back into old dynamics that never quite worked for me. Instead it just feels like picking up a conversation that paused rather than ended. Whatever's happened for each of us since then, good or complicated, we all came from the same strange few years in this same building. Let's raise a glass to however we got here, and to actually doing this again before another decade passes."
+  },
+  {
+    "id": "introducing-yourself-at-a-support-group",
+    "title": "Introducing Yourself at a Support Group",
+    "category": "social",
+    "difficulty": "intermediate",
+    "premise": "You're at a support group meeting and it's your turn to introduce yourself to the group for the first time.",
+    "freestyleSeconds": 45,
+    "text": "Hi, I'm glad to be here, even though I'll admit I sat in the parking lot for a while before actually walking in tonight. I won't get into everything right away, but the short version is that the last year has been harder than I expected it to be, and I got to a point where trying to handle it entirely on my own clearly wasn't working. A friend mentioned this group a few months back, and it took me a while to actually follow through on showing up. I'm mostly here to listen tonight, but I wanted to say thank you for making space like this exist at all."
+  },
+  {
+    "id": "giving-a-eulogy-for-a-pet",
+    "title": "Eulogy for a Family Pet",
+    "category": "social",
+    "difficulty": "intermediate",
+    "premise": "You're saying a few words at a small gathering to remember a beloved family pet who recently passed away.",
+    "freestyleSeconds": 45,
+    "text": "It feels a little strange standing up to talk about a dog, but anyone who actually met him understands exactly why we're doing this. He showed up at our door as a scared, scrawny stray nobody else wanted, and somehow turned into the most confident, ridiculous animal any of us had ever lived with. He greeted literally everyone like they were the best part of his day, which, looking back, might be the single best trait a person could hope to learn from a pet. Thirteen years is not nearly enough time, but it was thirteen genuinely good years, and I don't think any of us would trade a single ordinary walk with him for anything."
+  },
+  {
+    "id": "hosting-trivia-night-opening",
+    "title": "Hosting Trivia Night",
+    "category": "social",
+    "difficulty": "beginner",
+    "premise": "You're hosting a trivia night at a local bar or event and need to open with the rules and some energy.",
+    "freestyleSeconds": 45,
+    "text": "Alright, welcome in, everybody -- grab your teams, grab a drink, and let's get into it. Tonight we've got six rounds, ten questions each, and I will be enforcing the no-phones rule with genuine enthusiasm, so please don't make me come over to your table. Scoring is straightforward: one point per correct answer, and the tiebreaker round at the end is closest-without-going-over, so brush up on your guessing skills, not just your facts. There's a prize for first place and, as always, a much funnier consolation prize for whichever team finishes dead last. Grab your answer sheets, get your team name figured out, and let's start with round one."
+  },
+  {
+    "id": "welcome-speech-at-a-block-party",
+    "title": "Welcome Speech at a Block Party",
+    "category": "social",
+    "difficulty": "beginner",
+    "premise": "You're welcoming neighbors to the annual block party you helped organize. Kick off the event.",
+    "freestyleSeconds": 45,
+    "text": "Welcome, everyone -- thank you for actually leaving your houses on a Saturday to come stand in the street with people you mostly wave at from your car. This is the sixth year we've done this, and every year I'm reminded how many people on this block I'd genuinely never talk to otherwise. Big thanks to whoever brought the extra folding tables, and an even bigger thank you to the family who's letting forty of us use their driveway for absolutely no good reason except that it's the widest one on the block. Food's on the table whenever you're ready, music's going all afternoon, and if anyone's dog gets loose, it's probably mine, so please just point me in the right direction."
+  },
+  {
+    "id": "best-friend-going-away-party-toast",
+    "title": "Toast at a Best Friend's Going-Away Party",
+    "category": "social",
+    "difficulty": "intermediate",
+    "premise": "Your best friend is moving away and you're giving a toast at their going-away party.",
+    "freestyleSeconds": 60,
+    "text": "I've known this move was coming for months and I still don't feel ready to actually say goodbye tonight, so I'm mostly going to avoid saying that word entirely. What I want people here to know is that this person has been the one showing up with takeout during the worst weeks of my life without ever once being asked, and I don't think there's a version of the last ten years that works without them in it. The new city is genuinely a good opportunity, and I'm not going to pretend I'd stand in the way of that even if I could. So instead of goodbye, let's just call this an extremely long-distance version of the same friendship, starting tomorrow."
+  },
+  {
+    "id": "holiday-party-toast",
+    "title": "End-of-Year Holiday Party Toast",
+    "category": "social",
+    "difficulty": "beginner",
+    "premise": "You're giving a toast at a holiday party for friends or coworkers to close out the year.",
+    "freestyleSeconds": 45,
+    "text": "Before everyone scatters for the holidays, I wanted to say a quick word. This year had its share of genuinely hard stretches for a lot of people in this room, and I don't want to gloss over that just because it's a party. But I also think the fact that we're all still here, still showing up for each other, still making time for nights like this one, says something real. Here's to closing out this year properly, to the people who got each other through the rough patches, and to whatever's coming next. Cheers, everyone -- eat too much, and I'll see you all next year."
+  },
+  {
+    "id": "congratulating-a-friend-on-new-baby",
+    "title": "Toast at a Baby Shower",
+    "category": "social",
+    "difficulty": "beginner",
+    "premise": "You're at a baby shower or celebration for a close friend who just had a baby. Say a few words.",
+    "freestyleSeconds": 45,
+    "text": "I've known this soon-to-be parent since long before either of us had any idea what we were doing with our lives, so watching them get ready for this next chapter has been something else entirely. I won't pretend to have any real advice about parenting, since I have exactly zero children myself, but I do know this: whoever this baby turns out to be, they are extraordinarily lucky in the parent department. This is going to be exhausting, occasionally terrifying, and probably the best thing that's ever happened to them, often within the same afternoon. Please join me in raising a glass to the newest arrival, and to the two people about to figure this all out together."
+  },
+  {
+    "id": "roast-toast-friendly",
+    "title": "Friendly Roast Toast",
+    "category": "social",
+    "difficulty": "advanced",
+    "premise": "You're giving a lighthearted, affectionate roast toast for a close friend at their birthday or milestone celebration. Keep it funny but kind.",
+    "freestyleSeconds": 60,
+    "text": "For anyone who doesn't know the guest of honor well, let me offer a public service announcement: never, under any circumstances, let this person plan the directions for a road trip. We are all here tonight because, despite an absolutely legendary track record of terrible decisions -- several of which I have been personally present for and cannot legally repeat in front of family -- this person has somehow become one of the most reliable, generous friends any of us has ever had. The contradictions genuinely don't make sense, and yet here we all are, still showing up, still laughing about the same stories a decade later. In all seriousness, we love you, we mean every joke with total affection, and we would not trade you for a friend who could actually read a map."
+  },
+  {
+    "id": "book-club-hosting-intro",
+    "title": "Hosting Book Club",
+    "category": "social",
+    "difficulty": "beginner",
+    "premise": "You're hosting book club at your place tonight and need to kick off the discussion for the group.",
+    "freestyleSeconds": 45,
+    "text": "Welcome, everyone -- glad you all made it, and thank you for actually finishing the book this month, or at least pretending convincingly enough that I can't tell the difference. I'll admit this one split me pretty evenly between loving the writing and being frustrated with how the ending wrapped up, so I'm curious whether that's a shared reaction or just me. Let's start easy before we get into anything spoiler-heavy: first impressions, gut reactions, anyone want to go first? There's wine on the counter and the usual rule applies -- no judgment for whoever skimmed the last fifty pages."
+  },
+  {
+    "id": "new-year-eve-toast",
+    "title": "New Year's Eve Toast",
+    "category": "social",
+    "difficulty": "beginner",
+    "premise": "It's a few minutes before midnight on New Year's Eve and you've been asked to say a few words before the countdown.",
+    "freestyleSeconds": 45,
+    "text": "A few minutes left, so I'll keep this short. This year had its rough patches, same as every year does, but standing in this room right now, surrounded by exactly these people, feels like a pretty good note to end it on. I'm not big on resolutions that fall apart by February, so instead let's just say this: whatever next year brings, I hope we're lucky enough to be facing it with people like the ones in this room. Grab your glasses, get ready to count down, and let's see what next year's got."
   }
 ]
