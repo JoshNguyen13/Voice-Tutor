@@ -1,0 +1,72 @@
+[
+  {
+    "id": "accepting-an-award",
+    "title": "Accepting an Award",
+    "category": "ceremonial",
+    "difficulty": "beginner",
+    "text": "Thank you so much for this incredible honor. I have to admit, I did not prepare a speech, because I genuinely did not expect to be standing up here tonight. This award belongs just as much to the team that stood behind me every step of the way, through the long nights and the moments when nothing seemed to be working. I want to thank my mentors for believing in me before I believed in myself, and my family for their patience and support. I will carry this recognition with me as motivation to keep pushing further. Thank you all, from the bottom of my heart."
+  },
+  {
+    "id": "self-introduction-networking",
+    "title": "Self-Introduction at a Networking Event",
+    "category": "professional",
+    "difficulty": "beginner",
+    "text": "Hi, it's great to meet you. My name is Alex, and I work as a product designer at a small technology company downtown, where I focus on building tools that make everyday software easier to use. Before this, I spent a few years working in user research, which taught me just how important it is to actually listen to the people using what you build. Outside of work, I like to spend my time hiking and experimenting with photography. I am here tonight hoping to meet people working in design and technology, so if that sounds like you, I would love to hear about what you are working on."
+  },
+  {
+    "id": "wedding-toast-best-friend",
+    "title": "Wedding Toast for a Best Friend",
+    "category": "ceremonial",
+    "difficulty": "intermediate",
+    "text": "For those who don't know me, I have had the privilege of being this incredible person's best friend for over fifteen years. I have watched them stumble through terrible first dates, celebrate hard-won promotions, and somehow always land on their feet no matter what life threw at them. When they told me they had met someone who finally understood them completely, I will admit I was skeptical, because I am protective and I set a high bar. But watching the two of you together over the past two years has completely changed my mind. Please raise your glasses and join me in wishing them a lifetime of laughter, adventure, and unconditional love."
+  },
+  {
+    "id": "pitching-startup-idea",
+    "title": "Pitching a Startup Idea to Investors",
+    "category": "professional",
+    "difficulty": "intermediate",
+    "text": "Every year, small business owners lose thousands of dollars to invoices that never get paid on time. The tools that exist to fix this are either too expensive or too complicated for a business with five employees to justify. Our platform automates the entire collections process, from the first friendly reminder to the final formal notice, using templates any business owner can customize in minutes. In the six months since our private beta launched, our early customers have recovered an average of eleven thousand dollars each in overdue payments, with almost no extra effort on their part. We are raising this round to grow our engineering team and bring this same relief to a hundred thousand more small businesses within two years."
+  },
+  {
+    "id": "retirement-speech",
+    "title": "Retirement Send-Off Speech",
+    "category": "ceremonial",
+    "difficulty": "beginner",
+    "text": "Thirty-two years ago, I walked into this building on my very first day, nervous and completely unsure of what I was doing, and somehow that nervous young person turned into the person standing in front of you today about to retire. I want to thank every single person who trained me, corrected me, and occasionally put up with my terrible jokes during long shifts. This company has given me more than a paycheck; it gave me lifelong friendships and a sense of purpose I never expected to find in an office job. I am looking forward to sleeping in, traveling with my wife, and finally learning how to fish properly. Thank you all for thirty-two wonderful years."
+  },
+  {
+    "id": "welcoming-new-employees",
+    "title": "Welcoming New Employees",
+    "category": "professional",
+    "difficulty": "beginner",
+    "text": "Welcome to the team, all of you. I still remember my own first day here, sitting in this same room, completely overwhelmed by how much there was to learn and slightly terrified I would forget everyone's name by lunchtime. Here is the good news: nobody expects you to know everything right now, and every person in this building was once exactly where you are sitting today. Over the next few weeks, you will meet your teammates, get access to your tools, and slowly understand how the pieces fit together. Ask questions constantly, even the ones that feel obvious, because the fastest way to learn here is simply to ask. We are genuinely excited to have you."
+  },
+  {
+    "id": "eulogy-mentor",
+    "title": "Eulogy Excerpt for a Beloved Mentor",
+    "category": "ceremonial",
+    "difficulty": "advanced",
+    "text": "I owe more to this man than I can properly put into words today, though I know he would tease me for even trying. He had this remarkable ability to make you feel like the most capable person in any room, even on days when you felt like you were barely holding things together. I remember calling him once, convinced I had made an unfixable mistake at work, and he simply laughed and told me that the mistake I was so afraid of was the exact same one he had made at my age. That was who he was: patient, generous with his time, and utterly unwilling to let the people he cared about believe they were alone in their struggles."
+  },
+  {
+    "id": "birthday-toast",
+    "title": "Toast at a Birthday Party",
+    "category": "social",
+    "difficulty": "beginner",
+    "text": "I have known the birthday person we are celebrating tonight since we were both far too young to be trusted with the amount of mischief we managed to get into, and somehow, decades later, they still put up with me. What I admire most is how they show up for the people they love, remembering the small details that most people would forget, like the fact that I still cannot function without coffee before nine in the morning. Another year older apparently means absolutely nothing to their energy level, which honestly puts the rest of us to shame. So please, raise your glasses with me and join in wishing them a year ahead that is just as bright, chaotic, and wonderful as they are."
+  },
+  {
+    "id": "conference-keynote-opening",
+    "title": "Conference Keynote Opening",
+    "category": "professional",
+    "difficulty": "advanced",
+    "text": "Good morning, everyone, and thank you for being here so early after what I am told was a memorable welcome reception last night. Ten years ago, the idea that a single developer working from a laptop could build software used by millions of people would have sounded like pure fantasy, yet today it happens every week. That shift did not happen because the tools got marginally better; it happened because an entire generation of infrastructure quietly disappeared into the background, letting people focus on the actual problem they were trying to solve. Over the next thirty minutes, I want to walk you through three shifts happening right now that will feel just as inevitable in hindsight as the ones before them."
+  },
+  {
+    "id": "best-man-speech-opening",
+    "title": "Best Man Speech Opening",
+    "category": "ceremonial",
+    "difficulty": "intermediate",
+    "text": "For anyone who does not know me, I am the friend who once texted the groom at two in the morning before his final exam, asking if he wanted tacos instead of studying, and somehow he still asked me to stand up here today. We have been through a lot together: terrible apartments, worse haircuts, and one road trip I am legally not allowed to describe in front of these relatives. Through all of it, I watched him grow into someone genuinely ready for this kind of commitment, which honestly still surprises me some days. Please join me in raising a glass to the two of them, and to a marriage as steady and ridiculous as our friendship has been."
+  }
+]
