@@ -8,7 +8,8 @@ const TEMPLATES = [
     type: 'positive',
     priority: 10,
     condition: (m) => m.overallScore >= 85,
-    message: (m) => `Excellent reading -- ${m.overallScore}/100 overall. This is genuinely strong, polished delivery.`,
+    message: (m) =>
+      `Excellent ${m.mode === 'scripted' ? 'reading' : 'speech'} -- ${m.overallScore}/100 overall. This is genuinely strong, polished delivery.`,
   },
   {
     id: 'great-pace',
@@ -21,7 +22,7 @@ const TEMPLATES = [
     id: 'great-accuracy',
     type: 'positive',
     priority: 7,
-    condition: (m) => m.accuracy >= 95,
+    condition: (m) => m.mode === 'scripted' && m.accuracy >= 95,
     message: () => `You stayed extremely close to the script -- barely a word out of place.`,
   },
   {
@@ -29,7 +30,7 @@ const TEMPLATES = [
     type: 'positive',
     priority: 6,
     condition: (m) => m.fillerCount === 0 && m.wordCount > 0,
-    message: () => `Not a single filler word -- that's a clean, confident read.`,
+    message: (m) => `Not a single filler word -- that's a clean, confident ${m.mode === 'scripted' ? 'read' : 'delivery'}.`,
   },
   {
     id: 'steady-pace',
@@ -43,7 +44,10 @@ const TEMPLATES = [
     type: 'positive',
     priority: 1,
     condition: (m) => m.wordCount > 0,
-    message: () => `You made it through the whole paragraph out loud -- that's the hardest part of practicing.`,
+    message: (m) =>
+      m.mode === 'scripted'
+        ? `You made it through the whole paragraph out loud -- that's the hardest part of practicing.`
+        : `You spoke the whole way through without a script to lean on -- that's the hardest part of practicing.`,
   },
   {
     id: 'too-fast',
@@ -83,18 +87,24 @@ const TEMPLATES = [
     message: (m) => `A couple of filler words snuck in (${m.fillerCount}). Try replacing them with a brief silent pause.`,
   },
   {
-    id: 'hesitation-pauses',
+    // In scripted mode the target text's sentence boundaries let the
+    // engine confidently call this hesitation rather than a natural
+    // pause. Freestyle has no such structure to compare against, so the
+    // wording stays deliberately softer and doesn't pinpoint a cause.
+    id: 'pauses',
     type: 'improvement',
     priority: 6,
-    condition: (m) => m.hesitationPauseCount >= 2,
+    condition: (m) => m.pauseCount >= 2,
     message: (m) =>
-      `You paused mid-sentence ${m.hesitationPauseCount} times, which usually signals reading ahead or losing your place. A quick runthrough beforehand can smooth this out.`,
+      m.mode === 'scripted'
+        ? `You paused mid-sentence ${m.pauseCount} times, which usually signals reading ahead or losing your place. A quick runthrough beforehand can smooth this out.`
+        : `You had a few longer pauses while speaking (${m.pauseCount}). That's normal when improvising -- getting a little more comfortable with the topic beforehand can help it flow more smoothly.`,
   },
   {
     id: 'low-accuracy',
     type: 'improvement',
     priority: 5,
-    condition: (m) => m.accuracy < 85,
+    condition: (m) => m.mode === 'scripted' && m.accuracy < 85,
     message: (m) =>
       `Your accuracy came in at ${m.accuracy}% -- this can be a real misread, but it's also often the microphone mishearing you. Try again in a quieter spot before assuming it's you.`,
   },

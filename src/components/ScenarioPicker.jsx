@@ -16,11 +16,19 @@ export default function ScenarioPicker({ scenarios, onSelect }) {
             {scenarios
               .filter((s) => s.category === category)
               .map((scenario) => (
-                <button key={scenario.id} className="scenario-card" onClick={() => onSelect(scenario)}>
+                <div key={scenario.id} className="scenario-card">
                   <h3>{scenario.title}</h3>
                   <span className={`difficulty difficulty-${scenario.difficulty}`}>{scenario.difficulty}</span>
                   <p>{scenario.text.slice(0, 90)}&hellip;</p>
-                </button>
+                  <div className="scenario-card-actions">
+                    <button className="mode-button primary" onClick={() => onSelect(scenario, 'scripted')}>
+                      Read Script
+                    </button>
+                    <button className="mode-button" onClick={() => onSelect(scenario, 'freestyle')}>
+                      Freestyle
+                    </button>
+                  </div>
+                </div>
               ))}
           </div>
         </section>

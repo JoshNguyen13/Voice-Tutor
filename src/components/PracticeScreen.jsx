@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { getSpeechRecognition } from '../utils/speechSupport.js'
 import { alignTranscript } from '../analysis/align.js'
-import { computeMetrics } from '../analysis/metrics.js'
+import { computeScriptedMetrics, computeFreestyleMetrics } from '../analysis/metrics.js'
 import { generateFeedback } from '../analysis/feedback.js'
 
 const COUNTDOWN_SECONDS = 3
 
-export default function PracticeScreen({ scenario, onComplete, onCancel }) {
+export default function PracticeScreen({ scenario, mode, onComplete, onCancel }) {
   const [phase, setPhase] = useState('idle') // idle | countdown | recording | processing | permission-denied | error
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS)
   const [interimText, setInterimText] = useState('')
@@ -102,13 +102,19 @@ export default function PracticeScreen({ scenario, onComplete, onCancel }) {
     setTimeout(() => {
       const durationMs = Date.now() - startTimeRef.current
       const transcript = chunksRef.current.map((c) => c.text).join(' ').trim()
-      const alignment = alignTranscript(scenario.text, transcript)
-      const metrics = computeMetrics({
-        scenarioText: scenario.text,
-        alignment,
-        chunks: chunksRef.current,
-        durationMs,
-      })
+
+      // Alignment only makes sense in scripted mode -- freestyle has no
+      // target text to compare against, so that step is skipped entirely.
+      const metrics =
+        mode === 'scripted'
+          ? computeScriptedMetrics({
+              scenarioText: scenario.text,
+              alignment: alignTranscript(scenario.text, transcript),
+              chunks: chunksRef.current,
+              durationMs,
+            })
+          : computeFreestyleMetrics({ transcript, chunks: chunksRef.current, durationMs })
+
       const feedback = generateFeedback(metrics)
       onComplete({ transcript, metrics, feedback })
     }, 400)
@@ -145,7 +151,17 @@ export default function PracticeScreen({ scenario, onComplete, onCancel }) {
     <div className="practice-screen">
       <div className="target-text">
         <h2>{scenario.title}</h2>
-        <p>{scenario.text}</p>
+        {mode === 'scripted' ? (
+          <p>{scenario.text}</p>
+        ) : (
+          <>
+            <p className="freestyle-premise">{scenario.premise}</p>
+            <p className="freestyle-hint">
+              Aim for about {scenario.freestyleSeconds} seconds -- speak in your own words, there's no script to
+              read.
+            </p>
+          </>
+        )}
       </div>
 
       {phase === 'idle' && (

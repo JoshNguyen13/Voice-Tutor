@@ -9,14 +9,16 @@ import scenarios from './data/scenarios.json'
 export default function App() {
   const [screen, setScreen] = useState('picker') // picker | practice | results
   const [selectedScenario, setSelectedScenario] = useState(null)
+  const [selectedMode, setSelectedMode] = useState(null) // 'scripted' | 'freestyle'
   const [results, setResults] = useState(null)
 
   if (!isSpeechRecognitionSupported()) {
     return <UnsupportedBrowser />
   }
 
-  function handleSelectScenario(scenario) {
+  function handleSelectScenario(scenario, mode) {
     setSelectedScenario(scenario)
+    setSelectedMode(mode)
     setScreen('practice')
   }
 
@@ -32,6 +34,7 @@ export default function App() {
 
   function handleNewScenario() {
     setSelectedScenario(null)
+    setSelectedMode(null)
     setResults(null)
     setScreen('picker')
   }
@@ -46,7 +49,12 @@ export default function App() {
       {screen === 'picker' && <ScenarioPicker scenarios={scenarios} onSelect={handleSelectScenario} />}
 
       {screen === 'practice' && selectedScenario && (
-        <PracticeScreen scenario={selectedScenario} onComplete={handlePracticeComplete} onCancel={handleNewScenario} />
+        <PracticeScreen
+          scenario={selectedScenario}
+          mode={selectedMode}
+          onComplete={handlePracticeComplete}
+          onCancel={handleNewScenario}
+        />
       )}
 
       {screen === 'results' && results && selectedScenario && (

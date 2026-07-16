@@ -1,4 +1,4 @@
-import { tokenizeWithBoundaries } from './tokenize.js'
+import { tokenizeWithBoundaries, tokenize } from './tokenize.js'
 
 const FILLER_WORDS = new Set(['um', 'uh', 'er', 'ah'])
 const PAUSE_THRESHOLD_MS = 1500
@@ -12,14 +12,55 @@ function curveScore(value, idealMin, idealMax, tolerance) {
   return Math.round(Math.max(0, 100 - penalty))
 }
 
-// chunks: [{ text, time }] where time is ms since recording started, one
-// entry per "final" Web Speech API result. This is the finest-grained
-// timing signal the API exposes -- it does not give per-word timestamps.
-export function computeMetrics({ scenarioText, alignment, chunks, durationMs }) {
-  const { targetWords, spokenWords, ops } = alignment
-  const durationMinutes = Math.max(durationMs, 1) / 60000
+function wordCountOf(text) {
+  return text.split(/\s+/).filter(Boolean).length
+}
 
-  const wpm = Math.round(spokenWords.length / durationMinutes)
+function fluencyScoreFrom(fillerCount, pauseCount) {
+  return Math.round(Math.max(0, 100 - fillerCount * 6 - pauseCount * 8))
+}
+
+// Pace, pace-by-thirds, and pace consistency depend only on chunk arrival
+// timestamps, never on the target script -- so both modes share this.
+function computePaceMetrics(chunks, durationMs) {
+  const durationMinutes = Math.max(durationMs, 1) / 60000
+  const wordCount = chunks.reduce((sum, c) => sum + wordCountOf(c.text), 0)
+  const wpm = Math.round(wordCount / durationMinutes)
+
+  const thirdMs = durationMs / 3
+  const thirdWordCounts = [0, 0, 0]
+  chunks.forEach((chunk) => {
+    const bucket = Math.min(2, Math.floor(chunk.time / (thirdMs || 1)))
+    thirdWordCounts[bucket] += wordCountOf(chunk.text)
+  })
+  const wpmByThird = thirdWordCounts.map((count) => Math.round(count / (thirdMs / 60000 || 1)))
+
+  const avgThirdWpm = wpmByThird.reduce((a, b) => a + b, 0) / 3
+  const maxDeviationPct = avgThirdWpm
+    ? (Math.max(...wpmByThird.map((w) => Math.abs(w - avgThirdWpm))) / avgThirdWpm) * 100
+    : 0
+
+  return {
+    wordCount,
+    wpm,
+    wpmByThird,
+    paceScore: curveScore(wpm, 130, 160, 40),
+    consistencyScore: curveScore(maxDeviationPct, 0, 15, 25),
+  }
+}
+
+// chunks: [{ text, time }] where time is ms since recording started, one
+// entry per "final" Web Speech API result -- the finest-grained timing
+// signal the API exposes (it does not give per-word timestamps).
+
+/**
+ * Scripted-mode metrics. The target script gives the engine a known word
+ * sequence and sentence structure to compare against, which is what makes
+ * accuracy and rhetorical-vs-hesitation pause classification possible.
+ */
+export function computeScriptedMetrics({ scenarioText, alignment, chunks, durationMs }) {
+  const { targetWords, ops } = alignment
+  const pace = computePaceMetrics(chunks, durationMs)
 
   // Accuracy: correct words score full credit, near-misses (likely
   // transcription noise rather than a real misread) score partial credit.
@@ -52,27 +93,15 @@ export function computeMetrics({ scenarioText, alignment, chunks, durationMs }) 
 
   let cumulativeWords = 0
   const chunkEndIndex = chunks.map((chunk) => {
-    cumulativeWords += chunk.text.split(/\s+/).filter(Boolean).length
+    cumulativeWords += wordCountOf(chunk.text)
     return cumulativeWords
   })
 
-  // Pace by thirds: bucket each chunk's arrival time into one of three
-  // equal windows of the session and count words spoken in it.
-  const thirdMs = durationMs / 3
-  const thirdWordCounts = [0, 0, 0]
-  chunks.forEach((chunk) => {
-    const wordCount = chunk.text.split(/\s+/).filter(Boolean).length
-    const bucket = Math.min(2, Math.floor(chunk.time / (thirdMs || 1)))
-    thirdWordCounts[bucket] += wordCount
-  })
-  const wpmByThird = thirdWordCounts.map((count) =>
-    Math.round(count / (thirdMs / 60000 || 1))
-  )
-
   // Pauses: a gap between chunks longer than the threshold. A gap that
   // lands at a sentence boundary in the script reads as a deliberate,
-  // rhetorical pause; anywhere else, it reads as hesitation.
-  let hesitationPauseCount = 0
+  // rhetorical pause; anywhere else, it reads as hesitation. pauseCount
+  // only tracks the latter -- rhetorical pauses aren't a flaw.
+  let pauseCount = 0
   let rhetoricalPauseCount = 0
   for (let idx = 0; idx < chunks.length; idx++) {
     const gap = idx === 0 ? chunks[idx].time : chunks[idx].time - chunks[idx - 1].time
@@ -84,36 +113,66 @@ export function computeMetrics({ scenarioText, alignment, chunks, durationMs }) 
       targetIndex != null &&
       (targetBoundaries[targetIndex]?.endsSentence || targetIndex === targetWords.length - 1)
     if (isRhetorical) rhetoricalPauseCount++
-    else hesitationPauseCount++
+    else pauseCount++
   }
 
-  const paceScore = curveScore(wpm, 130, 160, 40)
-  const accuracyScore = accuracy
-  const fluencyScore = Math.round(Math.max(0, 100 - fillerCount * 6 - hesitationPauseCount * 8))
-  const avgThirdWpm = wpmByThird.reduce((a, b) => a + b, 0) / 3
-  const maxDeviationPct = avgThirdWpm
-    ? (Math.max(...wpmByThird.map((w) => Math.abs(w - avgThirdWpm))) / avgThirdWpm) * 100
-    : 0
-  const consistencyScore = curveScore(maxDeviationPct, 0, 15, 25)
-
+  const fluencyScore = fluencyScoreFrom(fillerCount, pauseCount)
   const overallScore = Math.round(
-    accuracyScore * 0.35 + paceScore * 0.25 + fluencyScore * 0.25 + consistencyScore * 0.15
+    accuracy * 0.35 + pace.paceScore * 0.25 + fluencyScore * 0.25 + pace.consistencyScore * 0.15
   )
 
   return {
-    wpm,
-    wpmByThird,
+    mode: 'scripted',
+    wpm: pace.wpm,
+    wpmByThird: pace.wpmByThird,
     accuracy,
     fillerCount,
-    hesitationPauseCount,
+    pauseCount,
     rhetoricalPauseCount,
-    wordCount: spokenWords.length,
+    wordCount: pace.wordCount,
     durationSeconds: Math.round(durationMs / 1000),
     subScores: {
-      pace: paceScore,
-      accuracy: accuracyScore,
+      pace: pace.paceScore,
+      accuracy,
       fluency: fluencyScore,
-      consistency: consistencyScore,
+      consistency: pace.consistencyScore,
+    },
+    overallScore,
+  }
+}
+
+/**
+ * Freestyle-mode metrics. There's no target script, so there's no accuracy
+ * metric at all, and no way to tell a rhetorical pause from a hesitation
+ * pause with any confidence -- every long gap is just counted as a pause.
+ * Accuracy's 35% weight is redistributed across pace/fluency/consistency.
+ */
+export function computeFreestyleMetrics({ transcript, chunks, durationMs }) {
+  const pace = computePaceMetrics(chunks, durationMs)
+
+  const fillerCount = tokenize(transcript).filter((word) => FILLER_WORDS.has(word)).length
+
+  let pauseCount = 0
+  for (let idx = 0; idx < chunks.length; idx++) {
+    const gap = idx === 0 ? chunks[idx].time : chunks[idx].time - chunks[idx - 1].time
+    if (gap > PAUSE_THRESHOLD_MS) pauseCount++
+  }
+
+  const fluencyScore = fluencyScoreFrom(fillerCount, pauseCount)
+  const overallScore = Math.round(pace.paceScore * 0.4 + fluencyScore * 0.4 + pace.consistencyScore * 0.2)
+
+  return {
+    mode: 'freestyle',
+    wpm: pace.wpm,
+    wpmByThird: pace.wpmByThird,
+    fillerCount,
+    pauseCount,
+    wordCount: pace.wordCount,
+    durationSeconds: Math.round(durationMs / 1000),
+    subScores: {
+      pace: pace.paceScore,
+      fluency: fluencyScore,
+      consistency: pace.consistencyScore,
     },
     overallScore,
   }
