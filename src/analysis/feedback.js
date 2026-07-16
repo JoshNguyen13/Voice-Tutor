@@ -82,6 +82,18 @@ const TEMPLATES = [
     message: (m) => `You landed right around the suggested ${m.targetSeconds} seconds -- good sense of pacing for the format.`,
   },
   {
+    // m.pitch comes from analysis/pitch.js via PracticeScreen, not
+    // metrics.js -- it's optional bonus analysis (see VoiceTutor.md's
+    // "Possible directions") and can be null if pitch detection found too
+    // little voiced signal to say anything meaningful, so every pitch
+    // template guards on m.pitch existing first.
+    id: 'good-pitch-variation',
+    type: 'positive',
+    priority: 4,
+    condition: (m) => m.pitch && !m.pitch.isMonotone,
+    message: () => `You had good vocal variation throughout -- that expressiveness makes a real difference in how engaging this sounds.`,
+  },
+  {
     // Section 1's guiding principle is that feedback always leads with a
     // genuine positive, even on a rough attempt -- these two fill the
     // score bands where nothing else specific enough triggers, so the
@@ -285,6 +297,16 @@ const TEMPLATES = [
     condition: (m) => m.subScores.consistency < 70,
     message: () =>
       `Your pace swung noticeably across the paragraph. Aiming for one even, steady speed all the way through will make the read feel more controlled.`,
+  },
+  {
+    // See the comment on good-pitch-variation above: m.pitch is optional
+    // bonus analysis, never guaranteed to be present.
+    id: 'monotone-delivery',
+    type: 'improvement',
+    priority: 4,
+    condition: (m) => m.pitch?.isMonotone === true,
+    message: () =>
+      `Your pitch stayed pretty flat throughout -- adding a little more vocal variation, especially on key words, will help this land with more energy.`,
   },
 ]
 

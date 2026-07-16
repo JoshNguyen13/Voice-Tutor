@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getSpeechRecognition } from '../utils/speechSupport.js'
 import { getLastAttempt, saveLastAttempt } from '../utils/history.js'
+import { analyzeAudioPitch } from '../utils/audioAnalysis.js'
 import { alignTranscript } from '../analysis/align.js'
 import { computeScriptedMetrics, computeFreestyleMetrics } from '../analysis/metrics.js'
 import { generateFeedback } from '../analysis/feedback.js'
@@ -124,17 +125,19 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
 
   // Resolves once the recorder has actually finished writing its last
   // chunk (rather than guessing with a fixed delay), so the resulting
-  // Blob is never missing the tail end of the recording.
+  // Blob is never missing the tail end of the recording. Returns both the
+  // Blob itself (needed for pitch analysis) and a playable object URL
+  // built from it (needed for the <audio> element and download link).
   function stopMediaRecorder() {
     return new Promise((resolve) => {
       const mediaRecorder = mediaRecorderRef.current
       if (!mediaRecorder || mediaRecorder.state === 'inactive') {
-        resolve(null)
+        resolve({ blob: null, url: null })
         return
       }
       mediaRecorder.onstop = () => {
         const blob = new Blob(audioChunksRef.current, { type: mediaRecorder.mimeType || 'audio/webm' })
-        resolve(URL.createObjectURL(blob))
+        resolve({ blob, url: URL.createObjectURL(blob) })
       }
       mediaRecorder.stop()
     })
@@ -145,8 +148,15 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
     recognitionRef.current.stop()
     setPhase('processing')
 
-    const audioUrl = await stopMediaRecorder()
+    const { blob: audioBlob, url: audioUrl } = await stopMediaRecorder()
     streamRef.current?.getTracks().forEach((track) => track.stop())
+
+    // Pitch/monotone analysis (optional bonus feature -- see
+    // VoiceTutor.md's "Possible directions"). Runs on the same recorded
+    // audio used for playback, entirely separately from the word-level
+    // metrics pipeline below. analyzeAudioPitch() never throws -- a
+    // failure here should never break the core scoring loop.
+    const pitch = audioBlob ? await analyzeAudioPitch(audioBlob) : null
 
     // Give the last onresult event a beat to land before running the
     // analysis pipeline.
@@ -170,6 +180,12 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
               durationMs,
               targetSeconds: scenario.freestyleSeconds,
             })
+
+      // Pitch is merged onto the metrics object (rather than computed
+      // inside metrics.js) so feedback templates can reference m.pitch
+      // uniformly, while keeping metrics.js itself a pure, Web-Audio-free
+      // module that only ever reads the transcript and timing data.
+      metrics.pitch = pitch
 
       const feedback = generateFeedback(metrics)
 

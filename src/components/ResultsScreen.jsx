@@ -93,6 +93,13 @@ export default function ResultsScreen({ results, scenario, onRetry, onNewScenari
         <div className="audio-playback">
           <p>Listen back</p>
           <audio controls src={audioUrl} />
+          {/* Recordings are never stored by the app itself (session-only
+              playback, per Section 3/7) -- this just hands the browser's
+              own Blob URL to the user so *they* can keep a copy if they
+              want one, with zero storage added anywhere in the app. */}
+          <a className="link-button download-link" href={audioUrl} download={`voice-tutor-${scenario.id}-${metrics.mode}.webm`}>
+            Download recording
+          </a>
         </div>
       )}
 

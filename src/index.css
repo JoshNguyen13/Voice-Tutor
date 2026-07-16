@@ -63,6 +63,45 @@ button {
 
 /* Scenario picker */
 
+.random-picker {
+  margin-bottom: 28px;
+  padding: 18px;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-bottom-width: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.random-picker-label {
+  margin: 0 0 12px;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.random-picker-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.difficulty-select {
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 2px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.random-picker-controls .mode-button {
+  flex: none;
+  padding: 10px 18px;
+}
+
 .scenario-category h2 {
   font-size: 1rem;
   color: var(--color-muted);
@@ -474,6 +513,12 @@ button {
 
 .audio-playback audio {
   width: 100%;
+}
+
+.download-link {
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
 }
 
 .feedback-list {
