@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { getSpeechRecognition } from '../utils/speechSupport.js'
 import { getLastAttempt, saveLastAttempt } from '../utils/history.js'
 import { analyzeAudioPitch } from '../utils/audioAnalysis.js'
@@ -8,11 +8,40 @@ import { generateFeedback } from '../analysis/feedback.js'
 
 const COUNTDOWN_SECONDS = 3
 
+// Teleprompter mode's scroll speed is chosen from qualitative labels rather
+// than a raw WPM number. Moderate stays anchored to the app's existing
+// "ideal pace" (145 WPM, see metrics.js's curveScore), but the outer tiers
+// deliberately widen far beyond realistic speaking pace -- these numbers
+// drive a *visual* scroll rate, not a literal reading-speed simulation, and
+// a narrower range (previously 90-210) produced a barely-perceptible
+// difference between Very Slow and Very Fast once real scroll distances
+// were measured (see the viewport-sizing comment below for the other half
+// of that fix).
+const SPEED_OPTIONS = [
+  { key: 'very-slow', label: 'Very Slow', wpm: 60 },
+  { key: 'slow', label: 'Slow', wpm: 90 },
+  { key: 'slightly-slow', label: 'Slightly Slow', wpm: 115 },
+  { key: 'moderate', label: 'Moderate', wpm: 145 },
+  { key: 'slightly-fast', label: 'Slightly Fast', wpm: 180 },
+  { key: 'fast', label: 'Fast', wpm: 230 },
+  { key: 'very-fast', label: 'Very Fast', wpm: 300 },
+]
+const DEFAULT_SPEED_KEY = 'moderate'
+
+// Fraction of the rendered script height the teleprompter viewport shows at
+// once -- the rest is what actually needs to be scrolled through. Clamped
+// so it never gets uncomfortably short (MIN) or unnecessarily tall (MAX)
+// regardless of how long a given scenario's script is.
+const TELEPROMPTER_VISIBLE_FRACTION = 0.5
+const TELEPROMPTER_MIN_HEIGHT_PX = 100
+const TELEPROMPTER_MAX_HEIGHT_PX = 260
+
 export default function PracticeScreen({ scenario, mode, onComplete, onCancel }) {
   const [phase, setPhase] = useState('idle') // idle | countdown | recording | processing | permission-denied | error
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS)
   const [interimText, setInterimText] = useState('')
   const [errorDetail, setErrorDetail] = useState('')
+  const [speedKey, setSpeedKey] = useState(DEFAULT_SPEED_KEY) // teleprompter mode only
 
   const recognitionRef = useRef(null)
   const shouldBeListeningRef = useRef(false)
@@ -22,6 +51,15 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
   const streamRef = useRef(null)
   const mediaRecorderRef = useRef(null)
   const audioChunksRef = useRef([])
+
+  // Teleprompter mode only. viewportRef/textRef are the scrollable window
+  // and the text block inside it; maxScrollPxRef/pixelsPerSecondRef are
+  // refs (not state) since the scroll animation writes to the DOM directly
+  // every frame and neither value should ever trigger a re-render.
+  const viewportRef = useRef(null)
+  const textRef = useRef(null)
+  const maxScrollPxRef = useRef(0)
+  const pixelsPerSecondRef = useRef(0)
 
   useEffect(() => {
     const SpeechRecognition = getSpeechRecognition()
@@ -85,6 +123,63 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, countdown])
 
+  // Teleprompter mode: size the viewport and measure how far the text needs
+  // to scroll, once, right after the initial layout (useLayoutEffect runs
+  // post-layout/pre-paint, so there's no flash of an unsized viewport).
+  // This component fully remounts on every retry, so measuring once on
+  // mount is sufficient -- a window resize mid-recording would invalidate
+  // this, an accepted, known limitation rather than something worth a
+  // ResizeObserver.
+  //
+  // The viewport height is set as a fraction of the text's own rendered
+  // height (via scrollHeight, which reports the full content height
+  // regardless of the container's overflow/clipping) rather than a fixed
+  // CSS pixel value. A fixed height risked being tall enough to fit an
+  // entire (shorter) scenario with zero scroll distance left over -- which
+  // is exactly what made every speed option look identical (nothing was
+  // scrolling). Sizing relative to the actual text guarantees real,
+  // proportional scroll distance for any scenario length.
+  useLayoutEffect(() => {
+    if (mode !== 'teleprompter') return
+    if (!viewportRef.current || !textRef.current) return
+
+    const textHeight = textRef.current.scrollHeight
+    const viewportHeight = Math.min(
+      TELEPROMPTER_MAX_HEIGHT_PX,
+      Math.max(TELEPROMPTER_MIN_HEIGHT_PX, textHeight * TELEPROMPTER_VISIBLE_FRACTION)
+    )
+    viewportRef.current.style.height = `${viewportHeight}px`
+    maxScrollPxRef.current = Math.max(0, textHeight - viewportHeight)
+  }, [mode])
+
+  // Teleprompter mode: drives the auto-scroll while actually recording.
+  // Position is recomputed from scratch every frame as elapsed wall-clock
+  // time (Date.now() - startTimeRef.current, the same origin the speech
+  // recognition chunk timestamps already use) times a constant speed --
+  // never accumulated across renders -- so this is unaffected by React
+  // StrictMode's dev-only double-invoke of effects. The scroll offset is
+  // written directly to the DOM via textRef rather than through React state
+  // or a JSX-controlled style prop: this component re-renders frequently
+  // during recording (every interim transcript update), and if `transform`
+  // were ever part of a React-managed style object on this element, those
+  // re-renders would stomp the imperative write and the scroll would
+  // visibly stutter back to its last rendered position.
+  useEffect(() => {
+    if (mode !== 'teleprompter' || phase !== 'recording') return
+
+    let rafId = requestAnimationFrame(tick)
+    function tick() {
+      const elapsedMs = Date.now() - startTimeRef.current
+      const scrollPx = Math.min(maxScrollPxRef.current, (elapsedMs / 1000) * pixelsPerSecondRef.current)
+      if (textRef.current) {
+        textRef.current.style.transform = `translateY(-${scrollPx}px)`
+      }
+      rafId = requestAnimationFrame(tick)
+    }
+
+    return () => cancelAnimationFrame(rafId)
+  }, [mode, phase])
+
   function handleStart() {
     setCountdown(COUNTDOWN_SECONDS)
     setPhase('countdown')
@@ -118,6 +213,19 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
     }
 
     startTimeRef.current = Date.now()
+
+    // Teleprompter mode: derive a constant scroll rate from the chosen
+    // speed label and the script's word count, read fresh at this exact
+    // moment (rather than captured by a useEffect dependency), so there's
+    // no stale-closure risk if the user changed the speed selection right
+    // before pressing Start.
+    if (mode === 'teleprompter') {
+      const wordCount = scenario.text.trim().split(/\s+/).length
+      const wpm = SPEED_OPTIONS.find((opt) => opt.key === speedKey)?.wpm ?? 145
+      const estimatedSeconds = (wordCount / wpm) * 60 || 1
+      pixelsPerSecondRef.current = maxScrollPxRef.current / estimatedSeconds
+    }
+
     shouldBeListeningRef.current = true
     setPhase('recording')
     recognitionRef.current.start()
@@ -164,21 +272,24 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
       const durationMs = Date.now() - startTimeRef.current
       const transcript = chunksRef.current.map((c) => c.text).join(' ').trim()
 
-      // Alignment only makes sense in scripted mode -- freestyle has no
-      // target text to compare against, so that step is skipped entirely.
+      // Alignment only makes sense against a real target script -- both
+      // 'scripted' and 'teleprompter' have one (teleprompter is the exact
+      // same script, just auto-scrolled), so both take this branch and
+      // score identically; only 'freestyle' has no target text to compare
+      // against and skips straight to the no-accuracy metrics path.
       const metrics =
-        mode === 'scripted'
-          ? computeScriptedMetrics({
-              scenarioText: scenario.text,
-              alignment: alignTranscript(scenario.text, transcript),
-              chunks: chunksRef.current,
-              durationMs,
-            })
-          : computeFreestyleMetrics({
+        mode === 'freestyle'
+          ? computeFreestyleMetrics({
               transcript,
               chunks: chunksRef.current,
               durationMs,
               targetSeconds: scenario.freestyleSeconds,
+            })
+          : computeScriptedMetrics({
+              scenarioText: scenario.text,
+              alignment: alignTranscript(scenario.text, transcript),
+              chunks: chunksRef.current,
+              durationMs,
             })
 
       // Pitch is merged onto the metrics object (rather than computed
@@ -197,7 +308,14 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
       const previousAttempt = getLastAttempt(scenario.id, mode)
       saveLastAttempt(scenario.id, mode, { overallScore: metrics.overallScore, subScores: metrics.subScores })
 
-      onComplete({ transcript, metrics, feedback, audioUrl, previousAttempt })
+      // uiMode carries the actual selected mode ('scripted' | 'teleprompter'
+      // | 'freestyle') through to the results screen. metrics.mode itself
+      // stays 'scripted' for teleprompter attempts (see computeScriptedMetrics
+      // above) so feedback.js's scripted-only templates keep firing correctly
+      // -- uiMode exists purely so ResultsScreen can label the score and name
+      // the downloaded recording accurately, without that decision affecting
+      // which feedback/accuracy data actually gets computed.
+      onComplete({ transcript, metrics, feedback, audioUrl, previousAttempt, uiMode: mode })
     }, 400)
   }
 
@@ -232,15 +350,47 @@ export default function PracticeScreen({ scenario, mode, onComplete, onCancel })
     <div className="practice-screen">
       <div className="target-text">
         <h2>{scenario.title}</h2>
-        {mode === 'scripted' ? (
-          <p>{scenario.text}</p>
-        ) : (
+
+        {mode === 'scripted' && <p>{scenario.text}</p>}
+
+        {mode === 'freestyle' && (
           <>
             <p className="freestyle-premise">{scenario.premise}</p>
             <p className="freestyle-hint">
               Aim for about {scenario.freestyleSeconds} seconds -- speak in your own words, there's no script to
               read.
             </p>
+          </>
+        )}
+
+        {mode === 'teleprompter' && (
+          <>
+            <div className="teleprompter-viewport" ref={viewportRef}>
+              <p className="teleprompter-text" ref={textRef}>
+                {scenario.text}
+              </p>
+            </div>
+
+            {phase === 'idle' && (
+              <div className="speed-picker">
+                <p className="speed-picker-label">Scroll speed</p>
+                <div className="speed-picker-options">
+                  {SPEED_OPTIONS.map((option) => (
+                    <button
+                      key={option.key}
+                      type="button"
+                      className={`speed-pill${speedKey === option.key ? ' selected' : ''}`}
+                      onClick={() => setSpeedKey(option.key)}
+                    >
+                      {option.label}
+                      {option.key === DEFAULT_SPEED_KEY && (
+                        <span className="speed-pill-recommended">Recommended</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

@@ -9,7 +9,7 @@ import scenarios from './data/scenarios.json'
 export default function App() {
   const [screen, setScreen] = useState('picker') // picker | practice | results
   const [selectedScenario, setSelectedScenario] = useState(null)
-  const [selectedMode, setSelectedMode] = useState(null) // 'scripted' | 'freestyle'
+  const [selectedMode, setSelectedMode] = useState(null) // 'scripted' | 'teleprompter' | 'freestyle'
   const [results, setResults] = useState(null)
 
   if (!isSpeechRecognitionSupported()) {

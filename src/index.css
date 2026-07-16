@@ -170,8 +170,15 @@ button {
 
 .scenario-card-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 14px;
+}
+
+/* Three buttons per card (Read Script / Teleprompter / Freestyle) land as
+   2-up-then-1-full-width rather than three squeezed columns on a narrow card. */
+.scenario-card-actions .mode-button {
+  flex: 1 1 calc(50% - 4px);
 }
 
 .mode-button {
@@ -238,6 +245,104 @@ button {
   color: var(--color-muted);
   font-size: 0.9rem;
   font-weight: 600;
+}
+
+/* Teleprompter mode: height is set dynamically (PracticeScreen.jsx) as a
+   fraction of the actual rendered script height, so there's always real,
+   proportional distance to auto-scroll through regardless of scenario
+   length -- a fixed pixel height here risked fitting a whole (shorter)
+   scenario with no scroll distance left over. This value is only a
+   fallback for the brief moment before that JS measurement runs. */
+.teleprompter-viewport {
+  position: relative;
+  height: 140px;
+  overflow: hidden;
+  background: var(--color-bg);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0 20px;
+}
+
+.teleprompter-viewport::before,
+.teleprompter-viewport::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 26px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.teleprompter-viewport::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--color-bg), transparent);
+}
+
+.teleprompter-viewport::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--color-bg), transparent);
+}
+
+.teleprompter-text {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  margin: 0;
+  padding: 24px 0;
+}
+
+.speed-picker {
+  margin-top: 16px;
+}
+
+.speed-picker-label {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.speed-picker-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.speed-pill {
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  border: 2px solid var(--color-border);
+  background: white;
+  color: var(--color-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.speed-pill.selected {
+  border-color: var(--duo-blue);
+  background: var(--duo-blue);
+  color: white;
+}
+
+.speed-pill-recommended {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.speed-pill:not(.selected) .speed-pill-recommended {
+  background: var(--duo-gold);
+  color: #7a5900;
 }
 
 .practice-controls {

@@ -40,9 +40,23 @@ function CompareStat({ label, current, previous }) {
   )
 }
 
+const MODE_SCORE_LABELS = {
+  scripted: 'Scripted Score',
+  teleprompter: 'Teleprompter Score',
+  freestyle: 'Freestyle Score',
+}
+
 export default function ResultsScreen({ results, scenario, onRetry, onNewScenario }) {
-  const { metrics, feedback, audioUrl, previousAttempt } = results
+  const { metrics, feedback, audioUrl, previousAttempt, uiMode } = results
+  // metrics.mode drives whether accuracy data actually exists (it stays
+  // 'scripted' for teleprompter attempts too, since they use the exact same
+  // scoring pipeline -- see PracticeScreen/metrics.js). uiMode is the actual
+  // mode the user picked ('scripted' | 'teleprompter' | 'freestyle'), kept
+  // separate so the score label and download filename can distinguish
+  // teleprompter from plain scripted reads without affecting which data
+  // this screen actually has to show.
   const isScripted = metrics.mode === 'scripted'
+  const displayMode = uiMode ?? metrics.mode
   const scoreTier = metrics.overallScore >= 80 ? 'high' : metrics.overallScore >= 50 ? 'mid' : 'low'
 
   return (
@@ -52,7 +66,7 @@ export default function ResultsScreen({ results, scenario, onRetry, onNewScenari
       <div className={`overall-score score-${scoreTier}`}>
         <span className="score-number">{metrics.overallScore}</span>
         <span className="score-label">/ 100</span>
-        <div className="score-mode-label">{isScripted ? 'Scripted Score' : 'Freestyle Score'}</div>
+        <div className="score-mode-label">{MODE_SCORE_LABELS[displayMode] ?? 'Score'}</div>
       </div>
 
       <div className="sub-scores">
@@ -97,7 +111,7 @@ export default function ResultsScreen({ results, scenario, onRetry, onNewScenari
               playback, per Section 3/7) -- this just hands the browser's
               own Blob URL to the user so *they* can keep a copy if they
               want one, with zero storage added anywhere in the app. */}
-          <a className="link-button download-link" href={audioUrl} download={`voice-tutor-${scenario.id}-${metrics.mode}.webm`}>
+          <a className="link-button download-link" href={audioUrl} download={`voice-tutor-${scenario.id}-${displayMode}.webm`}>
             Download recording
           </a>
         </div>

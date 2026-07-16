@@ -44,6 +44,9 @@ export default function ScenarioPicker({ scenarios, onSelect }) {
           <button className="mode-button primary" onClick={() => pickRandom('scripted')}>
             Random Scripted
           </button>
+          <button className="mode-button" onClick={() => pickRandom('teleprompter')}>
+            Random Teleprompter
+          </button>
           <button className="mode-button" onClick={() => pickRandom('freestyle')}>
             Random Freestyle
           </button>
@@ -64,6 +67,9 @@ export default function ScenarioPicker({ scenarios, onSelect }) {
                   <div className="scenario-card-actions">
                     <button className="mode-button primary" onClick={() => onSelect(scenario, 'scripted')}>
                       Read Script
+                    </button>
+                    <button className="mode-button" onClick={() => onSelect(scenario, 'teleprompter')}>
+                      Teleprompter
                     </button>
                     <button className="mode-button" onClick={() => onSelect(scenario, 'freestyle')}>
                       Freestyle
